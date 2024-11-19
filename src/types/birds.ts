@@ -1,22 +1,22 @@
-interface BirdSoundState {
+export interface BirdSoundState {
   sounds: BirdSound[];
   loading: boolean;
   error: string | null;
 }
-interface SonoImages {
+export interface SonoImages {
   small: string;
   med: string;
   large: string;
   full: string;
 }
 
-interface OsciImages {
+export interface OsciImages {
   small: string;
   med: string;
   large: string;
 }
 
-interface BirdSound {
+export interface BirdSound {
   id: string;
   gen: string;
   sp: string;

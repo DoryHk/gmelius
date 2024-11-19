@@ -1,24 +1,63 @@
-import { fileURLToPath, URL } from 'node:url'
+// Plugins
+import Components from "unplugin-vue-components/vite";
+import Vue from "@vitejs/plugin-vue";
+import Vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
+import ViteFonts from "unplugin-fonts/vite";
+import VueRouter from "unplugin-vue-router/vite";
 
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+// Utilities
+import { defineConfig } from "vite";
+import { fileURLToPath, URL } from "node:url";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/gmelius/',
-  plugins: [vue()],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  },
+  base: "/gmelius/",
+  plugins: [
+    VueRouter(),
+    Vue({
+      template: { transformAssetUrls },
+    }),
+
+    // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
+    Vuetify({
+      autoImport: true,
+      styles: {
+        configFile: "src/styles/settings.scss",
+      },
+    }),
+    Components(),
+    ViteFonts({
+      google: {
+        families: [
+          {
+            name: "Roboto",
+            styles: "wght@100;300;400;500;700;900",
+          },
+        ],
+      },
+    }),
+  ],
   server: {
     proxy: {
-      '/api': {
-        target: 'https://www.xeno-canto.org',
+      "/api": {
+        target: "https://www.xeno-canto.org",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
   },
-})
+  define: { "process.env": {} },
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+    extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
+  },
+  css: {
+    preprocessorOptions: {
+      sass: {
+        api: "modern-compiler",
+      },
+    },
+  },
+});

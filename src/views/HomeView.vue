@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useBirdSounds } from "@/composables/useBirdSounds";
-import ImageViewer from "@/components/ImageViewer.vue"; 
- 
+import ImageViewer from "@/components/ImageViewer.vue";
+
 const {
   sounds,
   loading,
@@ -12,67 +12,78 @@ const {
   fetchBirdSounds,
   isShortSound,
   filteredSounds,
-} = useBirdSounds(); 
+} = useBirdSounds();
 </script>
 
 <template>
   <v-container>
     <h1>French Juvenile Bird Sounds (Grus)</h1>
-
-    <!-- Fetch Button -->
-    <v-btn @click="fetchBirdSounds(1)" :loading="loading" class="mb-4" color="primary">
-      Fetch Bird Sounds
-    </v-btn>
-
-    <!-- Sound Length Filter Switch -->
-    <!-- <v-switch
-      v-if="sounds.length"
-      v-model="isShortSound"
-      @change="filteredSounds"
-      label="Show sounds shorter than 30 seconds"
-      :false-value="false"
-      :true-value="true"
-    /> -->
+    <div class="flex-container">
+      <!-- Fetch Button -->
+      <v-btn @click="fetchBirdSounds(1)" :loading="loading" color="primary">
+        Fetch Bird Sounds
+      </v-btn>
+      <!-- Sound Length Filter Switch -->
+      <div class="switch-container">
+        <v-switch
+          v-if="sounds.length"
+          v-model="isShortSound"
+          label="<30s Sounds"
+          color="primary"
+        >
+        </v-switch>
+      </div>
+    </div>
 
     <!-- Error Alert -->
-    <v-alert v-if="error" type="error" dismissible class="mb-4">
+    <v-alert v-if="error" type="error" dismissible class="error-alert">
       {{ error }}
     </v-alert>
 
-    <!-- Data Table -->
-    <v-data-table v-if="sounds.length" :headers="headers" :items="sounds" item-value="id" class="elevation-1">
-      <!-- Custom File Column -->
-      <template v-slot:item.file="{ item }"> 
-        <audio :src="item.file"  controls preload="none" class="audio-players" />
-      </template>
+    <v-expand-transition>
+      <!-- Data Table -->
+      <v-data-table
+        v-if="sounds.length"
+        :headers="headers"
+        :items="filteredSounds"
+        item-value="id"
+        height="450px"
+      >
+        <!-- Custom File Column -->
+        <template v-slot:item.file="{ item }">
+          <audio
+            :src="item.file"
+            controls
+            preload="none"
+            class="audio-players"
+          />
+        </template>
 
+        <!-- Custom Icon Column -->
+        <template v-slot:item.osci="{ item }">
+          <ImageViewer
+            :smallImage="item.osci.small"
+            :fullImage="item.osci.large"
+            :altText="`Sound icon for ${item.gen} ${item.sp}`"
+          />
+        </template>
 
-      <!-- Custom Icon Column -->
-      <template v-slot:item.osci="{ item }">
-        <ImageViewer 
-        :smallImage="item.osci.small" 
-        :fullImage="item.osci.large" 
-        :altText="`Sound icon for ${item.gen} ${item.sp}`" 
-      />
-       </template>
+        <!-- Custom Icon Column -->
+        <template v-slot:item.sono="{ item }">
+          <ImageViewer
+            :smallImage="item.sono.small"
+            :fullImage="item.sono.large"
+            :altText="`Sound icon for ${item.gen} ${item.sp}`"
+          />
+        </template>
 
-      <!-- Custom Icon Column -->
-      <template v-slot:item.sono="{ item }">
-        <ImageViewer 
-        :smallImage="item.sono.small" 
-        :fullImage="item.sono.large" 
-        :altText="`Sound icon for ${item.gen} ${item.sp}`" 
-      />
-       </template>
-
-      <!-- Custom License Column -->
-      <template v-slot:item.lic="{ item }">
-        <a :href="item.lic" target="_blank">License</a>
-      </template>
-    </v-data-table>
-
+        <!-- Custom License Column -->
+        <template v-slot:item.lic="{ item }">
+          <a :href="item.lic" target="_blank">License</a>
+        </template>
+      </v-data-table>
+    </v-expand-transition>
   </v-container>
-  
 </template>
 <style scoped>
 .v-container {
@@ -88,16 +99,6 @@ h1 {
   text-align: center;
 }
 
-.v-btn {
-  width: 100%;
-  max-width: 220px;
-  margin: 0 auto 24px;
-}
-
-.v-btn:focus {
-  outline: none;
-}
-
 .v-alert {
   margin-bottom: 24px;
 }
@@ -108,14 +109,6 @@ h1 {
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  margin-top: 20px;
-}
-
-.v-data-table th,
-.v-data-table td {
-  padding: 16px 12px;
-  text-align: left;
-  font-size: 14px;
 }
 
 .v-data-table th {
@@ -143,7 +136,7 @@ h1 {
   text-align: center;
 }
 
-.audio-players { 
+.audio-players {
   background: #f4f4f4;
   border: none;
   border-radius: 4px;
@@ -214,5 +207,17 @@ h1 {
   .audio-players {
     height: 30px;
   }
+}
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-items: flex-start;
+}
+.switch-container {
+  display: flex;
+}
+.error-alert {
+  margin: 15px 0;
 }
 </style>

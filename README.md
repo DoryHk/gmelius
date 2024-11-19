@@ -35,13 +35,13 @@ This will start the app and make it accessible at `http://localhost:5173/gmelius
 ## Project Structure
 
 - **`src/`**: Contains all the source files for the application.
-  - **`composables/`**: Holds the `useBirdSounds` composable for managing the API request and the sound data.
+  - **`composables/`**: Contains reusable logic such as useBirdSounds, a composable to manage bird sound data.
   - **`components/`**: Contains components like `ImageViewer.vue` to display images for the sounds.
-  - **`stores/`**: Contains the Pinia store for managing the bird sounds state.
+  - **`stores/`**: Contains the Pinia store for fetching the bird sounds data.
   - **`views/`**: Contains the main application view where the sound data table is displayed.
   - **`App.vue`**: The root Vue component.
   - **`main.ts`**: The entry point for the Vue app.
- 
+
 ## Unit Test
 
 To run the unit test
